@@ -25,16 +25,19 @@ func main() {
 	}
 	sOut := strings.Split(string(out), "\n")
 	for i := 0; i < len(sOut); i++ {
+		// look for line with "Stream" on the beggining
 		if len(sOut[i]) > 7 && sOut[i][2:8] == "Stream" {
 			splitted := strings.Split(sOut[i], " ")
 			if splitted[4] == "Video:" {
 				data["type"] = "Video"
 				data["video_codec"] = splitted[5]
+				// regular expression for line line 560x240 or 560x240,
 				regex, _ := regexp.Compile("^\\d+[x]\\d+,?$")
 				for j := 6; j < len(splitted); j++ {
 					if regex.MatchString(splitted[j]) {
 						data["width"] = strings.Split(splitted[j], "x")[0]
 						data["height"] = strings.Split(splitted[j], "x")[1][0:len(strings.Split(splitted[j], "x")[1])]
+						// trim "," from right side if there is one
 						data["height"] = strings.TrimRight(data["height"], ",")
 					}
 				}
